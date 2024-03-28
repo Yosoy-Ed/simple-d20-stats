@@ -1,0 +1,44 @@
+<div class="chartdice">
+    <div class="selections-container">
+        <div class="divsvgdice">{{{svgicon}}}</div>
+        <div id="d20itex"> ? </div>
+        <div class="dateselect">
+            <span class="usertogetdata">Show data of </span>
+            <select id="selectuser" name="whichusr"> {{{whichuser}}}</select>
+            <span class="fromdate"> from </span>
+            <select id="fromdateselect" name="datefrom"> {{{messagealldatesfrom}}}</select>
+            <span class="todate"> to </span>
+            <select id="todateselect" name="dateto">{{{messagealldatesto}}}</select>
+            <!-- <button type="button" class="updatedate" style="width:auto;">Update</button>  -->
+        </div>
+    </div>
+
+    <div class="titleclass">
+        <h1 class="ttch1" style={{{titlecolor}}}>
+            <span class="chartitle"> {{{chartitle}}}</span>
+        </h1>
+    </div>
+
+    <div class="chartnlabel">
+        <div id="roll-label">Number of rolls</div>
+        <div class="allthebars" id="allthebars">{{{appcontent}}}</div>        
+    </div>
+    <div class="dicelabels" id="dicelabels">{{{dicelabels}}}</div>
+</div>
+<br><br>
+<div class="tablescontainer">
+
+    <table class="tablestats">
+        <tr><th>Total d20 rolled: </th><th id="totalrolls">{{{totalrolls}}}</th></tr>
+        <tr><th>Total Natural 1 rolled: </th><th id="nat1s">{{{nat1s}}}</th></tr>
+        <tr><th>Natural 1 rolls from an attack: </th><th id="att1s">{{{att1s}}} </th></tr>
+        <tr><th>Total Natural 20 rolled: </th><th id="nat20s">{{{nat20s}}}</th></tr>
+        <tr><th>Natural 20 rolls from an attack: </th><th id="att20s">{{{att20s}}} </th></tr>
+    </table>
+
+    <table class="tableswho">
+        <tr><th>Who has rolled more Nat20s? </th><th id="usermostd20">{{{usermostd20}}}</th></tr>
+        <tr><th>Who has rolled more Nat1s? </th><th id="usermostd1">{{{usermostd1}}}</th></tr>
+    </table>
+
+    </div>
