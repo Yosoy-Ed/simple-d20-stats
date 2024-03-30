@@ -10,7 +10,7 @@ class ChartWindow extends Application {
             popOut: true,
             resizable: false,
             width: 800,
-            height: 450
+            height: 550
         });
     }
 
@@ -238,8 +238,6 @@ Hooks.on("ready", function () {
 
             ChatMessage.create({
                 content: '<div class="sdsdisabled"><img style="width: 40px; height:40px; border:none;" src="../../../icons/svg/d20-grey.svg"><b><u>Simple d20 statistics:</u> <br> Saving roll data is disabled</b><br></div>',
-                //speaker: { alias: " GM " } 
-                //speaker: ChatMessage.getSpeaker(),
             });
 
         }
@@ -263,28 +261,29 @@ Hooks.on('getSceneControlButtons', function (controls) {
 /************************************************** CHAT DICE HOOKS ***********/
 // If dice so nice is not active    
 Hooks.on("createChatMessage", (chatMessage) => {
-    if (!game.modules.get("dice-so-nice")?.active) {
 
-        if (!chatMessage.rolls[0]) {
-            return;
-        }
+    if (game.modules.get("dice-so-nice")?.active){ //If dice so nice is active but the roll is blind and ghost dice is not enabled
+        if(!game.settings.get("dice-so-nice", "showGhostDice") && chatMessage.blind && !game.settings.get('simple-dice-stats', 'pausedataacq') && chatMessage.isRoll){
 
-        if (game.settings.get('simple-dice-stats', 'pausedataacq')) {
-            return;
+            detectroll(chatMessage);            
         }
+    }
+
+    if (!game.modules.get("dice-so-nice")?.active && !game.settings.get('simple-dice-stats', 'pausedataacq') && chatMessage.isRoll ) { 
 
         detectroll(chatMessage);
     }
+
 });
 
-// If dice so nice is active
+// If dice so nice is active wait for animation to finish
 Hooks.on('diceSoNiceRollComplete', (data) => {
 
     let chatMessage = game.messages.get(data);
 
-    if (game.settings.get('simple-dice-stats', 'pausedataacq')) {
+     if (game.settings.get('simple-dice-stats', 'pausedataacq') || (chatMessage.blind && !game.settings.get("dice-so-nice", "showGhostDice"))) {// if the roll is blind it was registered like dice so nice is not installed and evaluated before
         return;
-    }
+    } 
 
     detectroll(chatMessage);
 });
@@ -315,28 +314,37 @@ function detectroll(chatMessage) {
         if (atstring.includes('Attack Roll')) {
             isattack = true;
         }
-    }
-
+    } 
+    
     let rolltype = 0; // 0-Public, 1-Blind , 2-PrivateGM, 3-Self
 
     // If the roll is not public it is whisper 
     if (chatMessage.whisper.length !== 0) {
 
+        let whisperdto = chatMessage.whisper;
+        let gmids = game.users.contents.filter(user => user.isGM).map(gm => gm.id);
+
         // The roll is blind
         if (chatMessage.blind) {
             rolltype = 1; // Blind Roll 
         } else {
-            //The roll was whispered to the GM
-            if (chatMessage.whisper[0] === game.users.contents.find(f => f.name === 'Gamemaster').id) {
-                rolltype = 2; //Private GM
+            //The roll was whispered to the GM      
+            if(whisperdto.length === gmids.length){
+    
+                const a1fus = whisperdto.sort().join('');
+                const a2fus = gmids.sort().join('');
+                
+                if (a1fus === a2fus){
+                    rolltype = 2; //Private GM
+                }
             }
             //The roll was whispered to himself
-            if (chatMessage.whisper[0] === chatMessage.user._id) {
+            if (chatMessage.whisper[0] === chatMessage.user._id && chatMessage.whisper.length === 1) {
                 rolltype = 3; // selfRoll
             }
         }
     }
-
+        
     if (rolltype !== 0 && !game.settings.get('simple-dice-stats', 'allowhiddenrolls')) {
         return;
     }
@@ -463,11 +471,16 @@ function wus() {
     for (var i = 0; i < (usnames.length); i++) {
         whichuser = whichuser + '<option value=' + usnames[i] + '>' + usnames[i] + '</option>';
     }
-    let gmid = game.users.contents.find(f => f.name === 'Gamemaster').id;
 
-    if (!game.settings.get('simple-dice-stats', 'allowviewgmrolls') && game.user._id !== gmid) {
-        let valuetodelete = '<option value=Gamemaster>Gamemaster</option>';
-        whichuser = whichuser.replace(valuetodelete, '');
+    let gmids = game.users.contents.filter(user => user.isGM).map(gm => gm.id);
+    if (!game.settings.get('simple-dice-stats', 'allowviewgmrolls') && !gmids.includes(game.user._id)) {
+
+        for (let x of gmids) {
+            let gmname = game.users.get(x).name;
+            let valuetodelete = '<option value='+gmname+'>'+gmname+'</option>';
+            whichuser = whichuser.replace(valuetodelete, '');
+
+        }
     }
 
     return whichuser;
