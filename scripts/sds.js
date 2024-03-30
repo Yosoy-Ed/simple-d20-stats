@@ -16,8 +16,8 @@ class ChartWindow extends Application {
 
     getData() {
 
-        let theuser = game.users.contents.filter(user => user.isOwner)[0].name;
-        let datarange = Object.keys(game.users.contents.find(f => f.name === theuser)['flags']['simple-dice-stats']['d20stats']);
+        let theuser = game.user.name;
+        let datarange = Object.keys(game.user['flags']['simple-dice-stats']['d20stats']);
 
         let whichuser = wus();
 
@@ -57,7 +57,7 @@ class ChartWindow extends Application {
     activateListeners(html) {
         super.activateListeners(html);
 
-        let theuser = game.users.contents.filter(user => user.isOwner)[0].name;
+        let theuser =  game.user.name;
 
         $("#selectuser option[value='" + theuser + "']").prop("selected", true);
         $("#fromdateselect option:first").prop("selected", true);
