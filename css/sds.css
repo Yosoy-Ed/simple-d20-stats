@@ -6,35 +6,9 @@
   text-align: center;
   background-image: none;
   background-color: antiquewhite;
-  overflow-y: visible;
-  overflow-x: visible;
+  /*overflow-y: visible; */
+  /*overflow-x: visible;*/
 }
-
-/*
-        chartdice
-            selections-container
-                divsvgdice
-                    mysvgdice
-                d20itex(id)
-                dateselect
-                    usertogetdata
-                    whichusr(selectuser)
-                    fromdate
-                    (fromdateselect)
-                    todate
-                    (todateselect)
-            titleclass
-                ttch1
-                    chartitle
-            chartnlabel
-                (roll-label)
-                allthebars(allthebars)
-                    bar-container
-                        bar(barn)
-                            bar-number
-                        bar-label
-                        bgimgdice
-        */
 
 .chartdice {
   display: flex;
@@ -46,11 +20,6 @@
   align-items: center;
   justify-content: center;
 }
-
-/*
-          .divsvgdice{        
-          }
-      */
 
 #d20itex {
   position: relative;
