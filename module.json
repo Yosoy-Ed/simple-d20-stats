@@ -2,20 +2,24 @@
   "id": "simple-dice-stats",
   "title": "Simple d20 stats",
   "description": "A foundryvtt module that shows d20 statitiscs in a bar chart allowing to choose a date range",
-  "authors": [{"name": "Yosoy-Ed"}],
-  "version": "0.1.1",
+  "authors": [
+    {
+      "name": "Yosoy-Ed",
+      "flags": {}
+    }
+  ],
+  "version": "0.1.2",
   "styles": [
     "css/sds.css"
   ],
   "esmodules": [
     "scripts/sds.js"
   ],
-  "packs": [],
   "url": "https://github.com/Yosoy-Ed/simple-d20-stats",
-  "manifest": "https://github.com/Yosoy-Ed/simple-d20-stats/releases/download/v0.1.1/module.json",
-  "download": "https://github.com/Yosoy-Ed/simple-d20-stats/releases/download/v0.1.1/module.zip",
+  "manifest": "https://github.com/Yosoy-Ed/simple-d20-stats/releases/latest/download/module.json",
+  "download": "https://github.com/Yosoy-Ed/simple-d20-stats/releases/latest/download/module.zip",
   "compatibility": {
     "minimum": "11",
-    "verified": "11"
+    "verified": "11.315"
   }
 }
