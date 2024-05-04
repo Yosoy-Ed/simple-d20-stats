@@ -73,7 +73,7 @@ class ChartWindow extends Application {
         // Changing user
         $('#selectuser').change(ev => {
 
-            let theuser = $("#selectuser").val();
+            let theuser = $("#selectuser").val();            
 
             let prevfrom = $('select[name="datefrom"] option:selected').text();
             let prevto = $('select[name="dateto"] option:selected').text();
@@ -530,7 +530,7 @@ function wus() {
     let whichuser = '';
 
     for (var i = 0; i < (usnames.length); i++) {
-        whichuser = whichuser + '<option value=' + usnames[i] + '>' + usnames[i] + '</option>';
+        whichuser = `${whichuser} <option value="${usnames[i]}">${usnames[i]}</option>`;
     }
 
     let gmids = game.users.contents.filter(user => user.isGM).map(gm => gm.id);
@@ -538,8 +538,10 @@ function wus() {
 
         for (let x of gmids) {
             let gmname = game.users.get(x).name;
-            let valuetodelete = '<option value=' + gmname + '>' + gmname + '</option>';
+            let valuetodelete = `<option value="${gmname}">${gmname}</option>`;
+            console.log(valuetodelete)
             whichuser = whichuser.replace(valuetodelete, '');
+            console.log(whichuser)
 
         }
     }
@@ -557,7 +559,7 @@ function d20icon(theusercolor) {
 }
 
 //Update the list of dates based on the selected user
-function populatedates(user) {
+function populatedates(user) {  
 
     let alldates = Object.keys(game.users.contents.find(f => f.name === user)['flags']['simple-dice-stats']['d20stats']);
 
