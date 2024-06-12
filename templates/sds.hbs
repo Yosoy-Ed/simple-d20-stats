@@ -26,20 +26,28 @@
     </div>
     <div class="dicelabels" id="dicelabels">{{{dicelabels}}}</div>
 </div>
-<br><br>
+<br>
 <div class="tablescontainer">
 
     <table class="tablestats">
-        <tr><th>Total d20 rolled: </th><th id="totalrolls">{{{totalrolls}}}</th></tr>
-        <tr><th>Total Natural 1 rolled: </th><th id="nat1s">{{{nat1s}}}</th></tr>
-        <tr><th>Natural 1 rolls from an attack: </th><th id="att1s">{{{att1s}}} </th></tr>
-        <tr><th>Total Natural 20 rolled: </th><th id="nat20s">{{{nat20s}}}</th></tr>
-        <tr><th>Natural 20 rolls from an attack: </th><th id="att20s">{{{att20s}}} </th></tr>
+        <tr><th>Total d20 rolled </th><th id="totalrolls">{{{totalrolls}}}</th></tr>
+        <tr><th>Mean </th><th id="mean">{{{mean}}}</th></tr>
+        <tr><th>Median </th><th id="median">{{{median}}}</th></tr>
+        <tr><th>Mode </th><th id="mode">{{{mode}}}</th></tr>
+    </table>
+
+    <table class="table-details">
+        <tr><th>Total Natural 1 rolled </th><th id="nat1s">{{{nat1s}}}</th></tr>
+        <tr><th>Total Natural 20 rolled </th><th id="nat20s">{{{nat20s}}}</th></tr>
+        <tr><th>Natural 1 rolls from an attack </th><th id="att1s">{{{att1s}}} </th></tr>
+        <tr><th>Natural 20 rolls from an attack </th><th id="att20s">{{{att20s}}} </th></tr>
     </table>
 
     <table class="tableswho">
-        <tr><th>Who has rolled more Nat20s? </th><th id="usermostd20">{{{usermostd20}}}</th></tr>
-        <tr><th>Who has rolled more Nat1s? </th><th id="usermostd1">{{{usermostd1}}}</th></tr>
+        <tr><th>Who has rolled more Nat20s ? </th><th id="usermostd20">{{{usermostd20}}}</th></tr>
+        <tr><th>Who has rolled more Nat1s ? </th><th id="usermostd1">{{{usermostd1}}}</th></tr>
     </table>
 
-    </div>
+</div>
+
+<div id="manage-data"></div>

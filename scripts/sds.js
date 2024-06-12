@@ -9,8 +9,8 @@ class ChartWindow extends Application {
             classes: ["sds-chart"],
             popOut: true,
             resizable: false,
-            width: 800,
-            height: 550
+            width: 800
+            //height: 550
         });
     }
 
@@ -41,7 +41,12 @@ class ChartWindow extends Application {
 
         let divSRDContent = `<div><i><b>Saving roll data is <br>${savingRollData}</b></i></div><div id="pause-state-btn" style="margin-left:1em;"></div>`;
 
+        let mMm = findStats(p['alldicedata']);
+
         return {
+            mean: mMm[0],
+            median: mMm[1],
+            mode: mMm[2],
             divSRDContent: divSRDContent,
             usermostd20: usermostd20,
             usermostd1: usermostd1,
@@ -73,7 +78,7 @@ class ChartWindow extends Application {
         // Changing user
         $('#selectuser').change(ev => {
 
-            let theuser = $("#selectuser").val();            
+            let theuser = $("#selectuser").val();
 
             let prevfrom = $('select[name="datefrom"] option:selected').text();
             let prevto = $('select[name="dateto"] option:selected').text();
@@ -99,6 +104,8 @@ class ChartWindow extends Application {
         });
 
         if (game.user.isGM) {
+
+            //btn to toggle saving data 
             let btn = document.createElement('button');
             btn.innerText = "Toggle";
 
@@ -119,10 +126,20 @@ class ChartWindow extends Application {
 
             });
             document.getElementById('pause-state-btn').appendChild(btn);
+
+            //btn to Manage data 
+            let btnManage = document.createElement('button');
+            btnManage.innerText = `Manage data`;
+
+            btnManage.addEventListener('click', () => {
+
+                new manageDiceData().render(true);
+
+            });
+
+            document.getElementById('manage-data').appendChild(btnManage);
         }
     }
-
-
 }
 
 // A class to create list of rolls with methods to update them
@@ -302,7 +319,6 @@ Hooks.on("ready", function () {
 
         });
     }
-
 
 });
 
@@ -508,8 +524,8 @@ function updatedata(datefrom, dateto, theuser) {
         }
     }
 
-
     return {
+        alldicedata: alldicedata,
         nat1s: alldicedata[0],
         nat20s: alldicedata[19],
         totalrolls: totalrolls,
@@ -539,10 +555,7 @@ function wus() {
         for (let x of gmids) {
             let gmname = game.users.get(x).name;
             let valuetodelete = `<option value="${gmname}">${gmname}</option>`;
-            console.log(valuetodelete)
             whichuser = whichuser.replace(valuetodelete, '');
-            console.log(whichuser)
-
         }
     }
 
@@ -559,7 +572,7 @@ function d20icon(theusercolor) {
 }
 
 //Update the list of dates based on the selected user
-function populatedates(user) {  
+function populatedates(user) {
 
     let alldates = Object.keys(game.users.contents.find(f => f.name === user)['flags']['simple-dice-stats']['d20stats']);
 
@@ -602,8 +615,14 @@ function updatechartonchange() {
 
         let p = updatedata(fromd, tod, theuser);
 
+        let mMm = findStats(p['alldicedata']);
+
         let usermostd20 = MoreInRange(fromd, tod, 20);
         let usermostd1 = MoreInRange(fromd, tod, 1);
+
+        $('#mean').html(mMm[0]);
+        $('#median').html(mMm[1]);
+        $('#mode').html(mMm[2]);
 
         $('.divsvgdice').html(svigcon);
         $('#allthebars').html(p['appcontent']);
@@ -619,7 +638,6 @@ function updatechartonchange() {
         $('#totalrolls').html(p['totalrolls']);
         $('#usermostd1').html(usermostd1);
         $('#usermostd20').html(usermostd20);
-
 
     }
 }
@@ -700,4 +718,194 @@ function sumInRange(data, startDate, endDate) {
     }
 
     return result;
+}
+
+function findStats(diceResults) {
+
+    // Calculate total number of rolls and total sum of results
+    let totalRolls = diceResults.reduce((a, b) => a + b, 0);
+    let totalSum = diceResults.map((freq, index) => (index + 1) * freq).reduce((a, b) => a + b, 0);
+
+    // Calculate mean
+    let mean = totalRolls !== 0 ? totalSum / totalRolls : '0';
+
+    // Calculate median
+    let cumulativeFreq = diceResults.reduce((a, b, i) => [...a, (a[i - 1] || 0) + b], []);
+    let medianIndex = cumulativeFreq.findIndex(cumFreq => cumFreq >= totalRolls / 2);
+    let median = totalRolls !== 0 ? medianIndex + 1 : '0'; // adding 1 because dice results start from 1, not 0
+
+    // Calculate mode
+    let maxFreq = Math.max(...diceResults);
+    let modes = diceResults.map((freq, index) => (freq === maxFreq ? index + 1 : null)).filter(val => val !== null);
+
+    modes = totalRolls !== 0 ? modes.join(',') : '0';
+
+    return [Math.round(mean * 100) / 100, Math.round(median * 100) / 100, modes]
+}
+
+////////////////////////////////////////////////////////////////////////////////////////// MANAGE DATA /////////////////////////////////
+
+class manageDiceData extends Application {
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            id: "sds-winapp-mngdata",
+            template: "modules/simple-dice-stats/templates/management.hbs",
+            title: "Manage d20 data",
+            classes: ["data-management"],
+            popOut: true,
+            resizable: false,
+            width: 800
+            //height: 550
+        });
+    }
+
+    getData() {
+
+        let whichuser = wus();
+
+        return {
+            whichuser: whichuser
+        };
+    }
+    //selectuser
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        managedUserDates(game.user);
+
+        for (let us of game.users) {
+            btnExport(us);
+            btnImport(us);
+            btnDelete(us);
+        }
+
+        $('#select-usertomanage').change(ev => {
+            document.querySelectorAll(".date-button").forEach(el => el.remove());
+            let selectedUser = game.users.getName($("#select-usertomanage").val());
+            managedUserDates(selectedUser);
+        });
+    }
+}
+
+//btn to export data
+function btnExport(user) {
+
+    let btnexport = document.createElement('button');
+    btnexport.innerText = `${user.name}`;
+    btnexport.className = 'export-button';
+
+    btnexport.addEventListener('click', () => {
+
+        let json = JSON.stringify(user['flags']['simple-dice-stats']['d20stats'], null, 2);
+        let blob = new Blob([json], { type: 'application/json' });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = `${user.name}.json`;
+        a.click();
+    });
+    document.getElementById('export-div').appendChild(btnexport);
+}
+// btnExport(game.users.getName(theuser)); 
+
+//btn to delete data
+function btnDelete(user) {
+
+    let btndelete = document.createElement('button');
+    btndelete.innerText = `${user.name}`;
+    btndelete.className = 'delete-button';
+
+    btndelete.addEventListener('click', async () => {
+
+        let currentDate = new Date();
+        let dateString = currentDate.toLocaleDateString('en-GB');
+        let d20sbydate = {
+            [dateString]: {
+                "totalRolls": 0,
+                "attacks20": 0,
+                "attacks1": 0,
+                "diceRolls": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        };
+        await user.unsetFlag('simple-dice-stats', 'd20stats');
+        await user.setFlag('simple-dice-stats', 'd20stats', d20sbydate);
+    });
+    document.getElementById('deletedata-div').appendChild(btndelete);
+}
+
+//btn to import data
+function btnImport(user) {
+
+    let btnimport = document.createElement('button');
+    btnimport.innerText = `${user.name}`;
+    btnimport.className = 'import-button';
+
+    btnimport.addEventListener('click', async () => {
+
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json'; // Only accept JSON files
+        input.style.display = 'none'; // Hide the input element
+
+        document.body.appendChild(input);
+
+        input.click(); // Simulate a click on the input
+
+        input.addEventListener('change', async function (event) { // Add async here
+            const file = event.target.files[0];
+            if (file) {
+                // Read the selected file content
+                const reader = new FileReader();
+                reader.onload = async function (event) { // Add async here
+                    const jsonData = JSON.parse(event.target.result);
+                    await user.setFlag('simple-dice-stats', 'd20stats', jsonData);
+                };
+                reader.readAsText(file);
+            }
+        });
+    });
+    document.getElementById('importdata-div').appendChild(btnimport);
+}
+
+//Update the list of dates based on the selected user
+function managedUserDates(user) {
+
+    let alldates = Object.keys(user['flags']['simple-dice-stats']['d20stats']);
+
+    for (let date of alldates) {
+
+        let btndate = document.createElement('button');
+        btndate.innerText = `${date}`;
+        btndate.className = 'date-button';
+
+        btndate.addEventListener('click', async () => {
+
+            let flagData = user.getFlag('simple-dice-stats', 'd20stats');
+            delete flagData[date];
+            let numberOfDates = Object.keys(user['flags']['simple-dice-stats']['d20stats']).length;
+            await user.unsetFlag('simple-dice-stats', 'd20stats');
+
+            if (numberOfDates === 0) {
+
+                let currentDate = new Date();
+                let dateString = currentDate.toLocaleDateString('en-GB');
+                let d20sbydate = {
+                    [dateString]: {
+                        "totalRolls": 0,
+                        "attacks20": 0,
+                        "attacks1": 0,
+                        "diceRolls": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    }
+                };
+                await user.setFlag('simple-dice-stats', 'd20stats', d20sbydate);
+            } else {
+                await user.setFlag('simple-dice-stats', 'd20stats', flagData);
+            }
+
+            btndate.remove();
+        });
+
+        document.getElementById('list-dates').appendChild(btndate);
+
+    }
 }

@@ -6,6 +6,7 @@
   text-align: center;
   background-image: none;
   background-color: antiquewhite;
+  height: fit-content;  
   /*overflow-y: visible; */
   /*overflow-x: visible;*/
 }
@@ -176,15 +177,22 @@ table td {
 }
 
 .tablestats {
-  width: 40%;
-  text-align: left;
+  width: 30%;  
 }
 
 .tableswho {
-  width: 50%;
-  text-align: center;
+  width: 30%;  
 }
 
+.table-details{
+  width: 40%;  
+}
+
+.table-details, .tableswho, .tablestats {
+  margin: 1em;
+  text-align: center;
+}
+/*
 #totalrolls,
 #nat1s,
 #att1s,
@@ -192,7 +200,7 @@ table td {
 #att20s {
   text-align: right;
 }
-
+*/
 .sdsdisabled {
 
   display: flex;
@@ -201,4 +209,46 @@ table td {
   font-family: 'Roboto';
   text-align: center;
   justify-content: center;
+}
+
+#sds-winapp-mngdata .window-content {
+  display: flex;
+  text-align: center;
+  background-image: none;
+  background-color: antiquewhite;
+  flex-direction: row;
+  align-items: center;
+  height: fit-content;  
+}
+
+#data-management{  
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#manage-bydate{
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+#importdata-div,#deletedata-div,#export-div{    
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid black;
+  background-color: mintcream;
+  padding: 0.5em;
+}
+
+.import-button,.delete-button,.export-button{
+  font-weight: bold;
+  text-align: center;
+  width: fit-content;
+  margin: 0.125em;
+}
+
+.date-button{
+  width: fit-content;
 }
