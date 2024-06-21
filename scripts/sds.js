@@ -9,7 +9,7 @@ class ChartWindow extends Application {
             classes: ["sds-chart"],
             popOut: true,
             resizable: false,
-            width: 800
+            width: 860
             //height: 550
         });
     }
@@ -227,6 +227,16 @@ Hooks.once('init', function () {
 
     game.settings.register('simple-dice-stats', 'allowviewgmrolls', {
         name: 'Allow players to see GM rolls',
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: true,
+        restricted: true
+    });
+
+    game.settings.register('simple-dice-stats', 'allowviewgmstats', {
+        name: 'Allow players to see GM stats like "Who has rolled more"',
+        hint: 'This can be enabled/disabled even when "Allow players to see GM rolls" is disabled',
         scope: 'world',
         config: true,
         type: Boolean,
@@ -681,11 +691,18 @@ function MoreInRange(startDate, endDate, index) {
         }
     }
 
-    if (maxUsers.length === 0) {
+    if (!game.settings.get('simple-dice-stats', 'allowviewgmstats') && !game.user.isGM) {
 
-        maxUsers = ['No one'];
+        for( let arrName of maxUsers){
+           let uName = game.users.getName(arrName);
+            if (uName.isGM) {
+                maxUsers = maxUsers.filter(element => element !== uName.name);
+            }
+        }
+    } 
 
-    }
+    if (maxUsers.length === 0) { maxUsers = ['No one']; }
+
 
     return maxUsers.join(', ');
 }
