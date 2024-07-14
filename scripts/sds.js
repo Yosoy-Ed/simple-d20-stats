@@ -381,12 +381,12 @@ Hooks.on('diceSoNiceRollComplete', (data) => {
 function detectroll(chatMessage) {
 
     // If the current user is not the one who rolled the dice, do nothing
-    if (chatMessage.user._id !== game.user._id) {
+    if (chatMessage.author._id !== game.user._id) {
         return;
     }
 
     let d20dices = chatMessage.rolls[0].dice;
-    let userwhorolled = chatMessage.user.name;
+    let userwhorolled = chatMessage.author.name;
     let isattack = false;
 
     if (game.system.id === 'pf2e') {
@@ -426,7 +426,7 @@ function detectroll(chatMessage) {
                 }
             }
             //The roll was whispered to himself
-            if (chatMessage.whisper[0] === chatMessage.user._id && chatMessage.whisper.length === 1) {
+            if (chatMessage.whisper[0] === chatMessage.author._id && chatMessage.whisper.length === 1) {
                 rolltype = 3; // selfRoll
             }
         }
