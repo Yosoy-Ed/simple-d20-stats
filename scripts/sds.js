@@ -2,7 +2,7 @@
 // Window Class
 class ChartWindow extends Application {
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             id: "sds-winapp",
             template: "modules/simple-dice-stats/templates/sds.hbs",
             title: "D20 STATISTICS",
@@ -189,7 +189,7 @@ class ResetButton extends FormApplication {
             width: 200,
             closeOnSubmit: true
         }
-        return mergeObject(defaults, overrides);
+        return foundry.utils.mergeObject(defaults, overrides);
     }
 
     getData() {
@@ -380,13 +380,15 @@ Hooks.on('diceSoNiceRollComplete', (data) => {
 // updates the flag of the user containing all the rolled dices
 function detectroll(chatMessage) {
 
+    let msgId = game.version < 12 ? chatMessage.user._id : chatMessage.author._id;
+
     // If the current user is not the one who rolled the dice, do nothing
-    if (chatMessage.author._id !== game.user._id) {
+    if (msgId !== game.user._id) {
         return;
     }
 
     let d20dices = chatMessage.rolls[0].dice;
-    let userwhorolled = chatMessage.author.name;
+    let userwhorolled = game.version < 12 ? chatMessage.user.name : chatMessage.author.name;
     let isattack = false;
 
     if (game.system.id === 'pf2e') {
@@ -426,7 +428,7 @@ function detectroll(chatMessage) {
                 }
             }
             //The roll was whispered to himself
-            if (chatMessage.whisper[0] === chatMessage.author._id && chatMessage.whisper.length === 1) {
+            if (chatMessage.whisper[0] === msgId && chatMessage.whisper.length === 1) {
                 rolltype = 3; // selfRoll
             }
         }
@@ -764,7 +766,7 @@ function findStats(diceResults) {
 
 class manageDiceData extends Application {
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             id: "sds-winapp-mngdata",
             template: "modules/simple-dice-stats/templates/management.hbs",
             title: "Manage d20 data",
