@@ -375,11 +375,23 @@ Hooks.on('diceSoNiceRollComplete', (data) => {
     detectroll(chatMessage);
 });
 
+//MidiQOL Compatibility
+Hooks.on('midi-qol.RollComplete', (workflow) => {
+
+    let chatMessage = workflow.chatCard;
+
+    if (!game.settings.get('critic-message', 'disablemodule')) {
+
+        detectroll(chatMessage);
+    }
+});
+
 //////////////////////////////////////    FUNCTIONS    ////////////////////////////////////// 
 
 // updates the flag of the user containing all the rolled dices
 function detectroll(chatMessage) {
 
+    let gameSystem = game.system.id;
     let msgId = game.version < 12 ? chatMessage.user._id : chatMessage.author._id;
 
     // If the current user is not the one who rolled the dice, do nothing
@@ -391,11 +403,16 @@ function detectroll(chatMessage) {
     let userwhorolled = game.version < 12 ? chatMessage.user.name : chatMessage.author.name;
     let isattack = false;
 
-    if (game.system.id === 'pf2e') {
+    if (gameSystem === 'pf2e') {
 
         if (chatMessage.rolls[0]['type'] === 'attack-roll') {
             isattack = true;
         }
+    }
+
+    if (gameSystem === 'dnd5e' && chatMessage.rolls[0].options.flavor !== undefined  && chatMessage.rolls[0].options.flavor.includes('Attack')){
+
+        isattack = true;        
     }
 
     if (game.system.id === 'dnd5e') {
