@@ -380,7 +380,7 @@ Hooks.on('midi-qol.RollComplete', (workflow) => {
 
     let chatMessage = workflow.chatCard;
 
-    if (!game.settings.get('critic-message', 'disablemodule')) {
+    if (!game.settings.get('simple-dice-stats', 'disablemodule')) {
 
         detectroll(chatMessage);
     }
