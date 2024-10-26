@@ -8,7 +8,7 @@
       "flags": {}
     }
   ],
-  "version": "0.1.9",
+  "version": "0.2.0",
   "styles": [
     "css/sds.css"
   ],
@@ -20,6 +20,6 @@
   "download": "https://github.com/Yosoy-Ed/simple-d20-stats/releases/latest/download/module.zip",
   "compatibility": {
     "minimum": "11",
-    "verified": "11.315"
+    "verified": "12.331"
   }
 }
