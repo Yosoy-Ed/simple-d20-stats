@@ -6,6 +6,10 @@
     {
       "name": "Yosoy-Ed",
       "flags": {}
+    },
+    {
+      "name": "Nolat",
+      "flags": {}
     }
   ],
   "version": "0.2.1",
@@ -15,9 +19,9 @@
   "esmodules": [
     "scripts/sds.js"
   ],
-  "url": "https://github.com/Yosoy-Ed/simple-d20-stats",
-  "manifest": "https://github.com/Yosoy-Ed/simple-d20-stats/releases/latest/download/module.json",
-  "download": "https://github.com/Yosoy-Ed/simple-d20-stats/releases/latest/download/module.zip",
+  "url": "https://github.com/Nolat/simple-d20-stats",
+  "manifest": "https://github.com/Nolat/simple-d20-stats/releases/latest/download/module.json",
+  "download": "https://github.com/Nolat/simple-d20-stats/releases/latest/download/module.zip",
   "compatibility": {
     "minimum": "11",
     "verified": "13.346"
