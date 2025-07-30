@@ -334,16 +334,21 @@ Hooks.on("ready", function () {
 
 // Boton en el panel izquierdo
 Hooks.on('getSceneControlButtons', function (controls) {
-    let bar = controls.find(c => c.name === 'token');
+    let bar = controls.tokens ?? controls.find(c => c.name === 'token');
+    if (!bar) return;
 
-    bar.tools.push({
+    const btnData = {
         name: "dices",
         title: 'Your d20 statistics',
-        icon: 'fas fa-dice-d20', // choose your icon
+        icon: 'fas fa-dice-d20',
         onClick: () => new ChartWindow().render(true),
         button: true
-    });
+    };
+
+    if(Array.isArray(bar.tools)) bar.tools.push(btnData);
+    else bar.tools.dices = btnData;
 });
+
 
 /************************************************** CHAT DICE HOOKS ***********/
 // If dice so nice is not active    
